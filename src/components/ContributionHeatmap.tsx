@@ -146,16 +146,16 @@ export function ContributionHeatmap({
                     const isSuccessful = day.isSuccessful;
 
                     // Compute styling based on state
-                    let cellClasses = "w-[15px] h-[15px] rounded-[3px] transition-all cursor-pointer ";
+                    let cellClasses = "w-[15px] h-[15px] rounded-[3px] transition-all ";
 
                     if (isFuture) {
-                      cellClasses += "bg-[#12151e]/50 border border-white/[0.03] opacity-35 cursor-not-allowed";
+                      cellClasses += "bg-[#161b22] border border-[#30363d] cursor-not-allowed";
                     } else if (isSuccessful) {
                       cellClasses +=
-                        "bg-emerald-500 hover:bg-emerald-400 border border-emerald-400/50 shadow-[0_0_6px_rgba(16,185,129,0.35)]";
+                        "bg-emerald-500 hover:bg-emerald-400 border border-emerald-400/50 shadow-[0_0_6px_rgba(16,185,129,0.35)] cursor-pointer";
                     } else {
                       cellClasses +=
-                        "bg-[#151923] hover:bg-[#1f2536] border border-white/[0.05] hover:border-zinc-500/50";
+                        "bg-[#161b22] hover:bg-[#1f242c] border border-[#30363d] hover:border-[#484f58] cursor-pointer";
                     }
 
                     if (isToday) {
@@ -234,7 +234,7 @@ export function ContributionHeatmap({
           <div className="flex gap-1 items-center">
             {/* Unmarked */}
             <div
-              className="w-3 h-3 rounded-[2px] bg-[#151923] border border-white/[0.05]"
+              className="w-3 h-3 rounded-[2px] bg-[#161b22] border border-[#30363d]"
               title="Unmarked / Not clean"
             />
             {/* Faint emerald */}
