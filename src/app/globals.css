@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --background: #090a0f;
+  --foreground: #f3f4f6;
+  --card-bg: #11141c;
+  --card-border: rgba(255, 255, 255, 0.07);
+  --cell-empty: #161a23;
+  --cell-empty-border: rgba(255, 255, 255, 0.05);
+  --emerald-primary: #10b981;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom sleek scrollbar for heatmap and modal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0d1117;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #272f3d;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Smooth tooltips */
+.heatmap-cell {
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.22);
+  z-index: 20;
+}
+
+/* Glow effects */
+.glow-emerald {
+  box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.35);
+}
+
+.glow-emerald-sm {
+  box-shadow: 0 0 12px -2px rgba(16, 185, 129, 0.3);
+}
+
+.glow-emerald-lg {
+  box-shadow: 0 0 40px -2px rgba(16, 185, 129, 0.25);
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.55);
+  }
+}
+
+.pulse-emerald {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
