@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShieldCheck, ChevronLeft, ChevronRight, SlidersHorizontal, Sparkles } from "lucide-react";
+import { UnloopLogo } from "./UnloopLogo";
 
 interface HeaderProps {
   currentYear: number;
@@ -28,18 +29,8 @@ export function Header({
         {/* Logo & Tagline */}
         <div className="flex items-center gap-3">
           <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-950 border border-emerald-500/40 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
-            {/* SVG Logo: Unloop icon - broken cycle symbol */}
-            <svg
-              className="w-5 h-5 text-emerald-400 stroke-current"
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-              <polyline points="22 10 18.5 6.5 15 10" />
-            </svg>
+            {/* New Unloop brand symbol */}
+            <UnloopLogo size={22} />
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping opacity-60" />
           </div>
 

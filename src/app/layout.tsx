@@ -18,7 +18,22 @@ export const metadata: Metadata = {
     "A minimal, private daily habit-breaking tracker inspired by GitHub's green contribution calendar. Zero disclosure. 100% private.",
   keywords: ["habit tracker", "habit breaker", "private tracker", "contribution calendar", "streak tracker"],
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/icon.svg",
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Unloop",
   },
 };
 
