@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { X, Download, Upload, Trash2, Shield, AlertTriangle, Check, RefreshCw } from "lucide-react";
+import { X, Download, Upload, Trash2, Shield, AlertTriangle, Check, RefreshCw, CloudUpload } from "lucide-react";
 import { exportData, importData, clearAllData } from "../lib/storage";
 import { CheckInStore } from "../lib/types";
 
@@ -10,6 +10,9 @@ interface DataManagementModalProps {
   onClose: () => void;
   onDataChanged: (newCheckIns: CheckInStore) => void;
   onLoadSample: () => void;
+  userId?: string | null;
+  userEmail?: string | null;
+  onMigrateToCloud?: () => Promise<void>;
 }
 
 export function DataManagementModal({
@@ -17,10 +20,14 @@ export function DataManagementModal({
   onClose,
   onDataChanged,
   onLoadSample,
+  userId,
+  userEmail,
+  onMigrateToCloud,
 }: DataManagementModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [confirmReset, setConfirmReset] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [isMigrating, setIsMigrating] = useState(false);
 
   if (!isOpen) return null;
 
@@ -78,9 +85,22 @@ export function DataManagementModal({
     showFeedback("All progress has been reset.");
   };
 
+  const handleSyncToCloud = async () => {
+    if (!onMigrateToCloud) return;
+    setIsMigrating(true);
+    try {
+      await onMigrateToCloud();
+      showFeedback("All local check-ins synced to your cloud account.");
+    } catch {
+      showFeedback("Sync failed. Check your network connection.");
+    } finally {
+      setIsMigrating(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-lg rounded-2xl bg-[#11141e] border border-white/[0.1] shadow-2xl p-6 relative">
+      <div className="w-full max-w-lg rounded-2xl bg-[#11141e] border border-white/[0.1] shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -106,10 +126,33 @@ export function DataManagementModal({
           </div>
         </div>
 
+        {/* Account Sync status if logged in */}
+        {userId && (
+          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 leading-relaxed mb-4 flex items-center justify-between gap-3">
+            <div>
+              <strong className="block font-semibold text-emerald-200">
+                Cloud Sync Active
+              </strong>
+              <span className="text-zinc-400">Signed in as {userEmail}</span>
+            </div>
+            {onMigrateToCloud && (
+              <button
+                type="button"
+                onClick={handleSyncToCloud}
+                disabled={isMigrating}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors disabled:opacity-50 shrink-0"
+              >
+                <CloudUpload className="w-3.5 h-3.5" />
+                <span>{isMigrating ? "Syncing..." : "Sync Local"}</span>
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Privacy Note */}
         <div className="p-3.5 rounded-xl bg-[#161a25] border border-white/[0.06] text-xs text-zinc-300 leading-relaxed mb-6">
           <strong className="text-emerald-400 block mb-1">Zero-Disclosure Guarantee:</strong>
-          Unloop never asks what habit you are conquering. All check-ins are stored exclusively inside your browser&apos;s localStorage. No cookies, no external servers, no tracking scripts.
+          Unloop never asks what habit you are conquering. Check-ins are identified only by date and status. No habit names, descriptions, or personal questionnaires exist in the code or database.
         </div>
 
         {/* Actions list */}
@@ -178,7 +221,7 @@ export function DataManagementModal({
           <div className="flex items-center justify-between p-3 rounded-xl bg-red-950/20 border border-red-500/20">
             <div>
               <div className="text-sm font-semibold text-red-200">Clear All Records</div>
-              <div className="text-xs text-zinc-400">Permanently wipe your tracking data</div>
+              <div className="text-xs text-zinc-400">Permanently wipe your local tracking data</div>
             </div>
             <button
               onClick={handleReset}

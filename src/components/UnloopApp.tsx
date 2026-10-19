@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo, useSyncExternalStore } from "react";
+import React, { useState, useMemo, useEffect, useSyncExternalStore, useCallback } from "react";
+import type { User } from "@supabase/supabase-js";
 import { Header } from "./Header";
 import { CheckInHero } from "./CheckInHero";
 import { StatsCards } from "./StatsCards";
@@ -8,6 +9,7 @@ import { ContributionHeatmap } from "./ContributionHeatmap";
 import { MonthGridView } from "./MonthGridView";
 import { MilestonesCard } from "./MilestonesCard";
 import { DataManagementModal } from "./DataManagementModal";
+import { AuthModal } from "./AuthModal";
 import { CheckInStore } from "../lib/types";
 import {
   saveCheckIns,
@@ -15,8 +17,16 @@ import {
   subscribeCheckIns,
   getCheckInsSnapshot,
   getServerSnapshot,
+  loadCheckIns,
 } from "../lib/storage";
 import { calculateStreakStats, getTodayKey } from "../lib/dates";
+import { getSupabase } from "../lib/supabase";
+import {
+  fetchCloudCheckIns,
+  upsertCloudCheckIn,
+  migrateLocalCheckInsToCloud,
+  subscribeToCloudChanges,
+} from "../lib/sync";
 import { LayoutGrid, Calendar as CalendarIcon, ShieldCheck } from "lucide-react";
 
 export function UnloopApp() {
@@ -32,31 +42,162 @@ export function UnloopApp() {
   const checkIns = sampleCheckIns || storedCheckIns;
   const isSampleActive = sampleCheckIns !== null;
 
+  // Supabase Auth and Sync State
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // Default to current year
   const systemYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState<number>(systemYear);
   const [viewMode, setViewMode] = useState<"heatmap" | "month">("heatmap");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // Load cloud data and perform safe one-time migration if local data exists
+  const loadCloudData = useCallback(async (userId: string) => {
+    setIsSyncing(true);
+    try {
+      const local = loadCheckIns();
+      const localKeys = Object.keys(local).filter((k) => local[k]);
+      const cloud = await fetchCloudCheckIns(userId);
+
+      // Safe migration: if user has local records not yet in cloud, upload them
+      if (localKeys.length > 0 && cloud) {
+        const missingInCloud = localKeys.filter((k) => !cloud[k]);
+        if (missingInCloud.length > 0) {
+          const { mergedStore } = await migrateLocalCheckInsToCloud(userId, local);
+          saveCheckIns(mergedStore);
+          return;
+        }
+      }
+
+      if (cloud) {
+        saveCheckIns(cloud);
+      }
+    } catch (err) {
+      console.warn("Could not load cloud data, operating on cached store:", err);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, []);
+
+  // Listen to Supabase Auth state changes
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase) return;
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        loadCloudData(session.user.id);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        loadCloudData(session.user.id);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [loadCloudData]);
+
+  // Real-time synchronization and window focus refresh across devices
+  useEffect(() => {
+    if (!user) return;
+
+    // 1. Subscribe to Supabase Realtime channel
+    const unsubscribeRealtime = subscribeToCloudChanges(
+      user.id,
+      (dateKey, isSuccessful) => {
+        if (!isSampleActive) {
+          const current = getCheckInsSnapshot();
+          const updated = { ...current, [dateKey]: isSuccessful };
+          saveCheckIns(updated);
+        }
+      }
+    );
+
+    // 2. Refresh on window focus or visibility change (e.g. mobile tab wake)
+    const handleFocus = async () => {
+      if (document.visibilityState === "visible") {
+        setIsSyncing(true);
+        try {
+          const cloudData = await fetchCloudCheckIns(user.id);
+          if (cloudData && !isSampleActive) {
+            saveCheckIns(cloudData);
+          }
+        } catch (err) {
+          console.warn("Auto-sync refresh paused:", err);
+        } finally {
+          setIsSyncing(false);
+        }
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      unsubscribeRealtime();
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [user, isSampleActive]);
+
   // Toggle today's status
-  const handleToggleToday = (status: boolean) => {
+  const handleToggleToday = async (status: boolean) => {
     const todayKey = getTodayKey();
     if (isSampleActive && sampleCheckIns) {
       setSampleCheckIns({ ...sampleCheckIns, [todayKey]: status });
     } else {
+      // Optimistic local update
       const updated = { ...storedCheckIns, [todayKey]: status };
       saveCheckIns(updated);
+
+      // Cloud sync if authenticated
+      if (user) {
+        setIsSyncing(true);
+        try {
+          await upsertCloudCheckIn(user.id, todayKey, status);
+        } catch (err) {
+          console.error("Cloud sync failed for today:", err);
+        } finally {
+          setIsSyncing(false);
+        }
+      }
     }
   };
 
   // Toggle any day
-  const handleToggleDay = (dateKey: string) => {
+  const handleToggleDay = async (dateKey: string) => {
     const current = !!checkIns[dateKey];
+    const newStatus = !current;
     if (isSampleActive && sampleCheckIns) {
-      setSampleCheckIns({ ...sampleCheckIns, [dateKey]: !current });
+      setSampleCheckIns({ ...sampleCheckIns, [dateKey]: newStatus });
     } else {
-      const updated = { ...storedCheckIns, [dateKey]: !current };
+      // Optimistic local update
+      const updated = { ...storedCheckIns, [dateKey]: newStatus };
       saveCheckIns(updated);
+
+      // Cloud sync if authenticated
+      if (user) {
+        setIsSyncing(true);
+        try {
+          await upsertCloudCheckIn(user.id, dateKey, newStatus);
+        } catch (err) {
+          console.error("Cloud sync failed for date:", err);
+        } finally {
+          setIsSyncing(false);
+        }
+      }
     }
   };
 
@@ -70,9 +211,37 @@ export function UnloopApp() {
     }
   };
 
-  const handleDataChanged = (newData: CheckInStore) => {
+  const handleDataChanged = async (newData: CheckInStore) => {
     setSampleCheckIns(null);
     saveCheckIns(newData);
+    if (user) {
+      setIsSyncing(true);
+      try {
+        await migrateLocalCheckInsToCloud(user.id, newData);
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
+  const handleSignOut = async () => {
+    const supabase = getSupabase();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
+    setUser(null);
+  };
+
+  const handleMigrateToCloud = async () => {
+    if (!user) return;
+    setIsSyncing(true);
+    try {
+      const current = getCheckInsSnapshot();
+      const { mergedStore } = await migrateLocalCheckInsToCloud(user.id, current);
+      saveCheckIns(mergedStore);
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   // Streak & Statistics calculation
@@ -87,7 +256,7 @@ export function UnloopApp() {
 
   return (
     <div className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
-      {/* Header */}
+      {/* Header with Cloud Sync */}
       <Header
         currentYear={selectedYear}
         availableYears={availableYears}
@@ -95,6 +264,10 @@ export function UnloopApp() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         isSampleActive={isSampleActive}
         onToggleSample={handleToggleSample}
+        userEmail={user?.email || null}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onSignOut={handleSignOut}
+        isSyncing={isSyncing}
       />
 
       {/* Main Content */}
@@ -192,7 +365,7 @@ export function UnloopApp() {
             <span>Unloop &bull; Absolute Privacy by Design</span>
           </div>
           <p className="text-zinc-400 max-w-md mx-auto">
-            No habits disclosed. No accounts created. No cloud tracking.
+            No habits disclosed. Zero tracking cookies. End-to-end user-isolated records.
             Every green square is yours alone.
           </p>
         </div>
@@ -207,6 +380,26 @@ export function UnloopApp() {
           const sample = generateSampleData();
           setSampleCheckIns(sample);
           setIsSettingsOpen(false);
+        }}
+        userId={user?.id || null}
+        userEmail={user?.email || null}
+        onMigrateToCloud={handleMigrateToCloud}
+      />
+
+      {/* Authentication & Cloud Sync Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={() => {
+          const supabase = getSupabase();
+          if (supabase) {
+            supabase.auth.getUser().then(({ data: { user } }) => {
+              if (user) {
+                setUser(user);
+                loadCloudData(user.id);
+              }
+            });
+          }
         }}
       />
     </div>
