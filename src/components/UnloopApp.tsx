@@ -126,7 +126,7 @@ export function UnloopApp() {
         />
 
         {/* 2. Key Metrics & Streak Stats */}
-        <StatsCards stats={stats} selectedYear={selectedYear} />
+        <StatsCards stats={stats} />
 
         {/* View Mode Switcher: Year Heatmap vs Month Grid */}
         <div className="flex items-center justify-between pt-2">
