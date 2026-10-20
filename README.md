@@ -1,62 +1,58 @@
-# Unloop
+# Unloop 🌱
+### Break the cycle. Reclaim your day.
 
-> A private daily habit-breaking tracker inspired by GitHub's green contribution calendar.
+Unloop is a private daily habit-breaking tracker built around one simple idea: **every day is an opportunity to take back control.**
 
-**Unloop** helps one person track their daily victory over an unwanted habit without ever requiring them to disclose, name, or describe that habit. Silence is strength.
+Instead of tracking endless tasks or writing lengthy journals, Unloop lets you mark each successful day with a single click and watch your progress grow over time.
 
----
+No explanations. No judgment. Just you, your commitment, and a calendar that tells your story.
 
-## ✨ Features
+## ✨ What Unloop Offers
 
-- **GitHub-Style Contribution Heatmap**: Full 53-week interactive calendar showing the entire year's daily progress at a glance.
-- **One-Tap Daily Check-in**: High-satisfaction check-in button with celebratory feedback to lock in each clean day.
-- **Easy Corrections & Undo**: Instantly undo today's check-in or click any past square to retroactively record or correct a day.
-- **Key Habit Metrics**:
-  - Total clean days won
-  - Current unbroken streak
-  - Best all-time streak
-  - Year consistency rate
-- **Sovereignty Milestones**: Track psychological benchmarks (Day 1, 3 Days, 7 Days, 14 Days, 21 Days, 30 Days, 60 Days, 90 Days, 180 Days, 365 Days).
-- **Dual Calendar Modes**: Switch seamlessly between the **Full Year Heatmap** and a detailed **Month-by-Month Calendar**.
-- **Year & Month Navigation**: Browse previous months or switch between tracking years (e.g., 2024, 2025, 2026, 2027).
-- **100% Client-Side Privacy**:
-  - Zero external databases or third-party cookies.
-  - Zero habit fields—Unloop never collects or transmits what you are overcoming.
-  - Full backup & restore with JSON export/import.
-  - One-click demo preview to explore sample progress without overwriting your real history.
+- **One-Tap Daily Check-ins:** Mark a successful day and move forward without unnecessary friction.
+- **Visual Progress Calendar:** See your journey unfold through a year-long calendar inspired by GitHub's contribution grid.
+- **Streak Tracking:** Follow your current streak and celebrate your longest run of successful days.
+- **Monthly and Yearly Views:** Zoom in on individual days or step back to see the bigger picture.
+- **Cross-Device Sync:** Access your progress on desktop and mobile, with your check-ins synchronized across devices.
+- **Instant Undo:** Made a mistake? Undo a check-in whenever you need to.
+- **Privacy at the Core:** Your progress is personal. Unloop doesn't ask you to name your habit, describe your struggles, or explain your choices.
 
----
+## 🔒 Your Journey. Your Privacy.
 
-## 🚀 Getting Started Locally
+Unloop is designed to keep things simple and personal.
 
-### Prerequisites
+Your calendar records whether a day was successful, not the story behind it. There are no habit descriptions to fill in and no personal explanations required.
 
-- Node.js 18.18+ or Node.js 20+
-- npm (or pnpm / yarn)
+Your journey belongs to you.
 
-### 1. Install dependencies (if not already installed)
+## 🌱 The Philosophy
 
-```bash
-npm install
-```
+Progress doesn't always need another productivity system, complicated dashboard, or daily journal.
 
-### 2. Run the development server
+Sometimes, all you need is a simple way to stay accountable.
 
-```bash
-npm run dev
-```
+One green square represents one successful day. Over time, those squares become a visible reminder of your consistency, your effort, and the progress you've made.
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Missed a day? Keep going.
 
-### 3. Build & Typecheck for verification
+Need to correct a check-in? Undo it.
 
-```bash
-npm run lint
-npm run build
-```
+The goal isn't perfection. It's taking ownership of the next day.
+
+## 🎯 Built For
+
+- People working to break unwanted habits.
+- Anyone who values privacy and personal accountability.
+- People who prefer visual progress over lengthy journaling.
+- Anyone building consistency one day at a time.
+
+## 💚 The Goal
+
+Make progress visible. Keep accountability simple. Protect personal privacy.
+
+**Unloop is more than a green square on a calendar. It's a record of the days you chose differently.**
 
 ---
 
-## 🔒 Privacy Architecture
-
-All tracking data is stored solely inside your browser's `localStorage` (`unloop_app_data_v1`). You can export a full offline backup at any time via the Settings modal (`.json` format) or clear all data in one click.
+### Unloop
+**Break the cycle. Reclaim your day.** 🌱
