@@ -1,6 +1,17 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --background: #f8fafc;
+  --foreground: #111827;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --cell-empty: #ebedf0;
+  --cell-empty-border: #d0d7de;
+  --emerald-primary: #10b981;
+}
+
+.dark {
   --background: #090a0f;
   --foreground: #f3f4f6;
   --card-bg: #11141c;
@@ -18,20 +29,33 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom sleek scrollbar for heatmap and modal */
+/* Custom sleek scrollbar for heatmap, modal, and general scroll */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d1117;
+  background: #f1f5f9;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #272f3d;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+.dark ::-webkit-scrollbar-track,
+.dark::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+.dark ::-webkit-scrollbar-thumb,
+.dark::-webkit-scrollbar-thumb {
+  background: #272f3d;
+}
+.dark ::-webkit-scrollbar-thumb:hover,
+.dark::-webkit-scrollbar-thumb:hover {
   background: #10b981;
 }
 

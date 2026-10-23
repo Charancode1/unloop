@@ -101,13 +101,13 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-md rounded-2xl bg-[#11141e] border border-white/[0.1] shadow-2xl p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#11141e] border border-slate-200 dark:border-white/[0.1] shadow-2xl p-6 relative transition-colors">
         {/* Close Button */}
         <button
           onClick={onClose}
           type="button"
-          className="absolute top-5 right-5 p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+          className="absolute top-5 right-5 p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -115,14 +115,14 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors">
             <Cloud className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white tracking-tight">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight transition-colors">
               Cross-Device Cloud Sync
             </h3>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 transition-colors">
               Access your green squares on desktop and mobile
             </p>
           </div>
@@ -130,26 +130,26 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
 
         {/* Setup Notice if not configured */}
         {!configured && (
-          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 leading-relaxed mb-5">
-            <strong className="block font-semibold mb-1 text-amber-300">
+          <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-xs text-amber-800 dark:text-amber-200 leading-relaxed mb-5 transition-colors">
+            <strong className="block font-semibold mb-1 text-amber-900 dark:text-amber-300">
               Supabase Setup Required
             </strong>
-            To enable cloud sync across your devices, connect your Supabase project credentials in <code className="bg-black/40 px-1 py-0.5 rounded font-mono text-[11px]">.env.local</code>.
+            To enable cloud sync across your devices, connect your Supabase project credentials in <code className="bg-amber-100 dark:bg-black/40 px-1 py-0.5 rounded font-mono text-[11px]">.env.local</code>.
           </div>
         )}
 
         {/* Tab switchers: Sign In vs Sign Up */}
-        <div className="flex bg-[#161a25] p-1 rounded-xl border border-white/[0.05] mb-5">
+        <div className="flex bg-slate-100 dark:bg-[#161a25] p-1 rounded-xl border border-slate-200/80 dark:border-white/[0.05] mb-5 transition-colors">
           <button
             type="button"
             onClick={() => {
               setMode("signin");
               setErrorMessage(null);
             }}
-            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
               mode === "signin"
-                ? "bg-zinc-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs dark:shadow-sm"
+                : "text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200"
             }`}
           >
             Sign In
@@ -160,10 +160,10 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setMode("signup");
               setErrorMessage(null);
             }}
-            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
               mode === "signup"
-                ? "bg-zinc-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs dark:shadow-sm"
+                : "text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200"
             }`}
           >
             Create Account
@@ -173,61 +173,61 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 dark:text-zinc-300 mb-1.5 transition-colors">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+              <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3 top-3 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-[#141824] border border-white/[0.08] focus:border-emerald-500/50 rounded-xl pl-9 pr-3 py-2 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-slate-50 dark:bg-[#141824] border border-slate-200 dark:border-white/[0.08] focus:border-emerald-500 focus:bg-white dark:focus:border-emerald-500/50 rounded-xl pl-9 pr-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 dark:text-zinc-300 mb-1.5 transition-colors">
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+              <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-400 absolute left-3 top-3 pointer-events-none" />
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-[#141824] border border-white/[0.08] focus:border-emerald-500/50 rounded-xl pl-9 pr-10 py-2 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-slate-50 dark:bg-[#141824] border border-slate-200 dark:border-white/[0.08] focus:border-emerald-500 focus:bg-white dark:focus:border-emerald-500/50 rounded-xl pl-9 pr-10 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-200"
+                className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200 cursor-pointer"
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            <span className="text-[11px] text-zinc-400 mt-1 block">
+            <span className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1 block">
               Minimum 6 characters
             </span>
           </div>
 
           {/* Feedback messages */}
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-red-950/30 border border-red-500/30 text-red-200 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+            <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-200 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-200 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-200 text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>{successMessage}</span>
             </div>
           )}
@@ -255,7 +255,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         </form>
 
         {/* Privacy Note */}
-        <div className="mt-5 pt-4 border-t border-white/[0.06] text-center text-[11px] text-zinc-400">
+        <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-white/[0.06] text-center text-[11px] text-slate-500 dark:text-zinc-400 transition-colors">
           Your account only stores dates you won. No habit names, descriptions, or personal questions are ever asked or saved.
         </div>
       </div>

@@ -62,19 +62,19 @@ export function ContributionHeatmap({
   ).length;
 
   return (
-    <section className="rounded-2xl bg-[#0f121a] border border-white/[0.08] p-5 sm:p-6 shadow-xl relative">
+    <section className="rounded-2xl bg-white dark:bg-[#0f121a] border border-slate-200/90 dark:border-white/[0.08] p-5 sm:p-6 shadow-sm dark:shadow-xl relative transition-all">
       {/* Header of Heatmap Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight transition-colors">
               {year} Daily Progress Calendar
             </h3>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+            <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 transition-colors">
               {yearSuccessCount} {yearSuccessCount === 1 ? "day" : "days"} won
             </span>
           </div>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5 transition-colors">
             Inspired by GitHub&apos;s contribution grid &bull; Click any day to log or adjust past progress
           </p>
         </div>
@@ -86,10 +86,10 @@ export function ContributionHeatmap({
             const todayEl = containerRef.current?.querySelector("[data-today='true']");
             todayEl?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
           }}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#161a24] hover:bg-zinc-800 text-zinc-300 border border-white/[0.06] transition-colors"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 dark:bg-[#161a24] dark:hover:bg-zinc-800 dark:text-zinc-300 dark:border-white/[0.06] transition-colors shadow-xs dark:shadow-none cursor-pointer"
         >
           <span>Jump to Today</span>
-          <ArrowRight className="w-3 h-3 text-emerald-400" />
+          <ArrowRight className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
         </button>
       </div>
 
@@ -101,14 +101,14 @@ export function ContributionHeatmap({
       >
         <div className="inline-flex flex-col min-w-[760px] select-none">
           {/* Month Labels row */}
-          <div className="flex ml-8 mb-1.5 text-[11px] font-semibold text-zinc-400">
+          <div className="flex ml-8 mb-1.5 text-[11px] font-semibold text-slate-500 dark:text-zinc-400">
             {columns.map((col, idx) => (
               <div
                 key={`month-${col.weekIndex}-${idx}`}
                 className="w-[15px] mr-[3px] text-left shrink-0"
               >
                 {col.monthLabel && (
-                  <span className="whitespace-nowrap -ml-0.5 text-zinc-300 font-medium">
+                  <span className="whitespace-nowrap -ml-0.5 text-slate-700 dark:text-zinc-300 font-medium">
                     {col.monthLabel}
                   </span>
                 )}
@@ -119,7 +119,7 @@ export function ContributionHeatmap({
           {/* Grid rows with Day of Week labels on left */}
           <div className="flex">
             {/* Day of Week Labels (Mon, Wed, Fri) */}
-            <div className="flex flex-col justify-between w-8 shrink-0 pr-2 py-0.5 text-[10px] font-medium text-zinc-400">
+            <div className="flex flex-col justify-between w-8 shrink-0 pr-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-zinc-400">
               {dayLabels.map((item, idx) => (
                 <div key={idx} className="h-[15px] flex items-center leading-none">
                   {item.show ? item.label : ""}
@@ -149,17 +149,19 @@ export function ContributionHeatmap({
                     let cellClasses = "w-[15px] h-[15px] rounded-[3px] transition-all ";
 
                     if (isFuture) {
-                      cellClasses += "bg-[#161b22] border border-[#30363d] cursor-not-allowed";
+                      cellClasses +=
+                        "bg-[#ebedf0] border border-[#e1e4e8] opacity-60 cursor-not-allowed dark:bg-[#161b22] dark:border-[#30363d] dark:opacity-100";
                     } else if (isSuccessful) {
                       cellClasses +=
-                        "bg-emerald-500 hover:bg-emerald-400 border border-emerald-400/50 shadow-[0_0_6px_rgba(16,185,129,0.35)] cursor-pointer";
+                        "bg-emerald-500 hover:bg-emerald-400 border border-emerald-600/30 dark:border-emerald-400/50 shadow-[0_1px_4px_rgba(16,185,129,0.3)] dark:shadow-[0_0_6px_rgba(16,185,129,0.35)] cursor-pointer";
                     } else {
                       cellClasses +=
-                        "bg-[#161b22] hover:bg-[#1f242c] border border-[#30363d] hover:border-[#484f58] cursor-pointer";
+                        "bg-[#ebedf0] hover:bg-[#dfe1e5] border border-[#d0d7de] hover:border-slate-400 dark:bg-[#161b22] dark:hover:bg-[#1f242c] dark:border-[#30363d] dark:hover:border-[#484f58] cursor-pointer";
                     }
 
                     if (isToday) {
-                      cellClasses += " ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#0f121a]";
+                      cellClasses +=
+                        " ring-2 ring-emerald-500 dark:ring-emerald-400 ring-offset-1 ring-offset-white dark:ring-offset-[#0f121a]";
                     }
 
                     return (
@@ -194,37 +196,37 @@ export function ContributionHeatmap({
       {/* Floating Tooltip */}
       {hoveredDay && (
         <div
-          className="fixed pointer-events-none z-50 transform -translate-x-1/2 -translate-y-full -mt-2 px-3 py-1.5 rounded-lg bg-zinc-900/95 border border-white/[0.15] text-xs text-white shadow-2xl backdrop-blur-md"
+          className="fixed pointer-events-none z-50 transform -translate-x-1/2 -translate-y-full -mt-2 px-3 py-1.5 rounded-lg bg-white/95 dark:bg-zinc-900/95 border border-slate-200/90 dark:border-white/[0.15] text-xs text-slate-900 dark:text-white shadow-xl dark:shadow-2xl backdrop-blur-md"
           style={{
             left: `${hoveredDay.x}px`,
             top: `${hoveredDay.y}px`,
           }}
         >
-          <div className="font-semibold text-zinc-100 flex items-center gap-1.5">
+          <div className="font-semibold text-slate-900 dark:text-zinc-100 flex items-center gap-1.5">
             <span>{formatFriendlyDate(hoveredDay.day.dateKey)}</span>
             {hoveredDay.day.isToday && (
-              <span className="text-[10px] text-emerald-400 font-bold uppercase">(Today)</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">(Today)</span>
             )}
           </div>
-          <div className="text-[11px] text-zinc-300 mt-0.5 flex items-center gap-1.5">
+          <div className="text-[11px] text-slate-600 dark:text-zinc-300 mt-0.5 flex items-center gap-1.5">
             {hoveredDay.day.isFuture ? (
-              <span className="text-zinc-400">Future date</span>
+              <span className="text-slate-400 dark:text-zinc-400">Future date</span>
             ) : hoveredDay.day.isSuccessful ? (
-              <span className="text-emerald-400 font-medium flex items-center gap-1">
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                 <Check className="w-3 h-3 stroke-[3]" />
                 Loop broken &bull; Clean day
               </span>
             ) : (
-              <span className="text-zinc-400">Unmarked &bull; Click to mark clean</span>
+              <span className="text-slate-500 dark:text-zinc-400">Unmarked &bull; Click to mark clean</span>
             )}
           </div>
         </div>
       )}
 
       {/* Heatmap Footer: Legend & Guidelines */}
-      <div className="mt-4 pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400">
+      <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-zinc-400">
         <div className="flex items-center gap-2">
-          <Info className="w-3.5 h-3.5 text-zinc-400" />
+          <Info className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-400" />
           <span>Click any square to toggle or correct that day&apos;s record.</span>
         </div>
 
@@ -234,17 +236,17 @@ export function ContributionHeatmap({
           <div className="flex gap-1 items-center">
             {/* Unmarked */}
             <div
-              className="w-3 h-3 rounded-[2px] bg-[#161b22] border border-[#30363d]"
+              className="w-3 h-3 rounded-[2px] bg-[#ebedf0] dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d]"
               title="Unmarked / Not clean"
             />
             {/* Faint emerald */}
             <div
-              className="w-3 h-3 rounded-[2px] bg-emerald-900/60 border border-emerald-800/40"
+              className="w-3 h-3 rounded-[2px] bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800/40"
               title="Starting out"
             />
             {/* Medium emerald */}
             <div
-              className="w-3 h-3 rounded-[2px] bg-emerald-600 border border-emerald-500/50"
+              className="w-3 h-3 rounded-[2px] bg-emerald-500 dark:bg-emerald-600 border border-emerald-600/30 dark:border-emerald-500/50"
               title="Clean"
             />
             {/* Vibrant emerald */}

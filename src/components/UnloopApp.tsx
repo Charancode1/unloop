@@ -255,8 +255,8 @@ export function UnloopApp() {
   const availableYears = [systemYear - 2, systemYear - 1, systemYear, systemYear + 1];
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
-      {/* Header with Cloud Sync */}
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#090a0f] dark:text-zinc-100 flex flex-col font-sans transition-colors duration-150">
+      {/* Header with Theme Toggle & Cloud Sync */}
       <Header
         currentYear={selectedYear}
         availableYears={availableYears}
@@ -274,9 +274,9 @@ export function UnloopApp() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Sample Mode Notice (if active) */}
         {isSampleActive && (
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs text-emerald-300">
+          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 transition-colors">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-ping" />
               <span>
                 <strong>Demo Preview Active:</strong> You are viewing sample progress. Your actual data is safely preserved.
               </span>
@@ -284,7 +284,7 @@ export function UnloopApp() {
             <button
               onClick={handleToggleSample}
               type="button"
-              className="px-2.5 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 font-semibold text-white transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500/20 dark:hover:bg-emerald-500/30 font-semibold text-white transition-colors cursor-pointer"
             >
               Exit Demo
             </button>
@@ -303,35 +303,37 @@ export function UnloopApp() {
 
         {/* View Mode Switcher: Year Heatmap vs Month Grid */}
         <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-1.5 p-1 bg-[#121520] border border-white/[0.06] rounded-xl">
+          <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-[#121520] border border-slate-200/80 dark:border-white/[0.06] rounded-xl transition-colors">
             <button
+              id="view-heatmap-btn"
               type="button"
               onClick={() => setViewMode("heatmap")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 viewMode === "heatmap"
-                  ? "bg-zinc-800 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs dark:shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
-              <LayoutGrid className="w-3.5 h-3.5 text-emerald-400" />
+              <LayoutGrid className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Year Heatmap</span>
             </button>
             <button
+              id="view-month-btn"
               type="button"
               onClick={() => setViewMode("month")}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 viewMode === "month"
-                  ? "bg-zinc-800 text-white shadow-sm"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs dark:shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
-              <CalendarIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <CalendarIcon className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Month Calendar</span>
             </button>
           </div>
 
-          <span className="text-xs text-zinc-400 hidden sm:inline">
-            Active Year: <strong className="text-zinc-200 font-semibold">{selectedYear}</strong>
+          <span className="text-xs text-slate-500 dark:text-zinc-400 hidden sm:inline transition-colors">
+            Active Year: <strong className="text-slate-800 dark:text-zinc-200 font-semibold">{selectedYear}</strong>
           </span>
         </div>
 
@@ -358,13 +360,13 @@ export function UnloopApp() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] py-8 text-center text-xs text-zinc-400 mt-12 bg-[#08090d]">
+      <footer className="border-t border-slate-200/80 dark:border-white/[0.06] py-8 text-center text-xs text-slate-500 dark:text-zinc-400 mt-12 bg-slate-100/60 dark:bg-[#08090d] transition-colors">
         <div className="max-w-6xl mx-auto px-4 space-y-2">
-          <div className="flex items-center justify-center gap-1.5 text-zinc-400 font-medium">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <div className="flex items-center justify-center gap-1.5 text-slate-700 dark:text-zinc-400 font-medium">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
             <span>Unloop &bull; Absolute Privacy by Design</span>
           </div>
-          <p className="text-zinc-400 max-w-md mx-auto">
+          <p className="text-slate-500 dark:text-zinc-400 max-w-md mx-auto">
             No habits disclosed. Zero tracking cookies. End-to-end user-isolated records.
             Every green square is yours alone.
           </p>

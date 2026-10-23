@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#090a0f] flex items-center justify-center text-zinc-500 text-sm">
+        <div className="min-h-screen bg-[#f8fafc] text-slate-500 dark:bg-[#090a0f] dark:text-zinc-500 flex items-center justify-center text-sm">
           Loading Unloop...
         </div>
       }
